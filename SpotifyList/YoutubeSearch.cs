@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,9 +24,9 @@ namespace Helpers
     ///   https://cloud.google.com/console
     /// Please ensure that you have enabled the YouTube Data API for your project.
     /// </summary>
-    partial class YoutubeSearch
+    internal class YoutubeSearch
     {
-        private string _query;
+        private readonly string _query;
         public YoutubeSearch(string queryString)
         {
             Debug.WriteLine("YouTube Data API: Search");
@@ -50,23 +51,11 @@ namespace Helpers
             // Call the search.list method to retrieve results matching the specified query term.
             var searchListResponse = await searchListRequest.ExecuteAsync();
 
-            List<string> videos = new List<string>();
 
+			// Add each result to the appropriate list, and then display the lists of matching videos.
+			var videos = (from searchResult in searchListResponse.Items where searchResult.Id.Kind == "youtube#video" select $"{searchResult.Id.VideoId}").ToList();
 
-            // Add each result to the appropriate list, and then display the lists of matching videos.
-
-            foreach (var searchResult in searchListResponse.Items)
-            {
-                switch (searchResult.Id.Kind)
-                {
-                    case "youtube#video":
-                        videos.Add(String.Format("{0}", searchResult.Id.VideoId));
-                        break;
-                }
-            }
-            
-
-            Debug.WriteLine(String.Format("Videos:\n{0}\n", string.Join("\n", videos)));
+			Debug.WriteLine($"Videos:\n{string.Join("\n", videos)}\n");
 
             return videos;
         }

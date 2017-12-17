@@ -76,6 +76,8 @@
             this.savedTracksListView.TabIndex = 2;
             this.savedTracksListView.UseCompatibleStateImageBehavior = false;
             this.savedTracksListView.View = System.Windows.Forms.View.Details;
+            this.savedTracksListView.MouseMove += SavedTracksListView_MouseMove;
+			this.savedTracksListView.MouseClick += SavedTracksListView_MouseClick;
             // 
             // ListTitle
             // 
@@ -138,14 +140,9 @@
 
         }
 
-        private void SavedTracksListView_MouseMove1(object sender, System.Windows.Forms.MouseEventArgs e)
-        {
-            throw new System.NotImplementedException();
-        }
+		#endregion
 
-        #endregion
-
-        private System.Windows.Forms.Button btnAuth;
+		private System.Windows.Forms.Button btnAuth;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ListView savedTracksListView;
         private System.Windows.Forms.ColumnHeader ListTitle;

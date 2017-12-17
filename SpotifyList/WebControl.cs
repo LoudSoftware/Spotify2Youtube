@@ -22,12 +22,11 @@ namespace SpotifyList
         private SpotifyWebAPI _spotify;
 
         private PrivateProfile _profile;
-        private List<FullTrack> _savedTracks;
-        private string _CLIENTID = "18b96889c87947fc98a5e436d7bdc613";
+	    private string _CLIENTID = "18b96889c87947fc98a5e436d7bdc613";
 
-        public List<FullTrack> SavedTracks { get => _savedTracks; set => _savedTracks = value; }
+        public List<FullTrack> SavedTracks { get; set; }
 
-        public WebControl()
+	    public WebControl()
         {
             InitializeComponent();
 
@@ -46,11 +45,11 @@ namespace SpotifyList
             btnAuth.Enabled = false;
             _profile = await _spotify.GetPrivateProfileAsync();
 
-            _savedTracks = await GetSavedTracksAsync();
+            SavedTracks = await GetSavedTracksAsync();
 
 
-            savedTracksCountLabel.Text  = _savedTracks.Count.ToString();
-            _savedTracks.ForEach(track => savedTracksListView.Items.Add(new ListViewItem()
+            savedTracksCountLabel.Text  = SavedTracks.Count.ToString();
+            SavedTracks.ForEach(track => savedTracksListView.Items.Add(new ListViewItem()
             {
                 Text = track.Name,
                 SubItems =
@@ -62,18 +61,24 @@ namespace SpotifyList
                     "null"
                     }
             }));
-        }
+
+	        foreach (ListViewItem item in savedTracksListView.Items)
+	        {
+		        item.UseItemStyleForSubItems = false;
+		        item.SubItems[3].ForeColor = Color.Blue;
+	        }
+		}
 
         /// <summary>
         /// Starts a youtube search with the given query
         /// </summary>
         /// <param name="query">The string we want to search for</param>
         /// <returns></returns>
-        private async Task<string> SearchYoutube(string query)
+        private static async Task<string> SearchYoutube(string query)
         {
             
 
-            List<string> results = new List<string>();
+            var results = new List<string>();
 
             try
             {
@@ -83,11 +88,11 @@ namespace SpotifyList
             {
                 foreach (var e in ex.InnerExceptions)
                 {
-                    Console.WriteLine("Error: " + e.Message);
+                    Debug.WriteLine("Error: " + e.Message);
                 }
             }
 
-            string firstResult = results.First();
+            var firstResult = results.First();
             Debug.WriteLine(firstResult);
 
             return results.First();
@@ -103,8 +108,8 @@ namespace SpotifyList
         /// <returns>The list of all saved tracks</returns>
         private async Task<List<FullTrack>> GetSavedTracksAsync()
         {
-            Paging<SavedTrack> savedTracks = await _spotify.GetSavedTracksAsync(20);
-            List<FullTrack> list = savedTracks.Items.Select(track => track.Track).ToList();
+            var savedTracks = await _spotify.GetSavedTracksAsync(20);
+            var list = savedTracks.Items.Select(track => track.Track).ToList();
 
             while (savedTracks.Next != null)
             {
@@ -115,20 +120,14 @@ namespace SpotifyList
             return list;
         }
 
-        private void BtnAuth_Click(object sender, EventArgs e)
-        {
-            Task.Run(() => RunAuthentication());
-            
-        }
-
         /// <summary>
         /// Runs the authentication process
         /// </summary>
         private async void RunAuthentication()
         {
             //TODO needs to be seperated in it's own class and have it save whatever we need to be able to no have to do this every time.
-            Console.WriteLine("Started authentication Task.");
-            WebAPIFactory webAPIFactory = new WebAPIFactory(
+            Debug.WriteLine("Started authentication Task.");
+            var webApiFactory = new WebAPIFactory(
                 "http://localhost",
                 8000,
                 _CLIENTID,
@@ -139,7 +138,7 @@ namespace SpotifyList
 
             try
             {
-                _spotify = await webAPIFactory.GetWebApi();
+                _spotify = await webApiFactory.GetWebApi();
             }
             catch (Exception e)
             {
@@ -156,22 +155,39 @@ namespace SpotifyList
             InitialSetup();
         }
 
-        /// <summary>
-        /// Starts the a youtube search when the search youtube button is clicked
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private async void BtnYoutubeSearch_Click(object sender, EventArgs e)
+
+
+		#region UI action Listeners
+
+		private void BtnAuth_Click(object sender, EventArgs e)
+	    {
+		    Task.Run(() => RunAuthentication());
+
+	    }
+
+		/// <summary>
+		/// Starts the a youtube search when the search youtube button is clicked
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private async void BtnYoutubeSearch_Click(object sender, EventArgs e)
         {
             
             foreach (ListViewItem item in savedTracksListView.Items)
             {
                 var subItems = item.SubItems;
 
-                string title = item.Text;
-                string artist = subItems[0].Text;
+                var title = item.Text;
+                var artist = subItems[1].Text;
 
                 item.SubItems[4].Text =  await SearchYoutube(title + " " + artist);
+
+				Debug.WriteLine("Searchig for: " + title + " " + artist);
+
+	            item.UseItemStyleForSubItems = false;
+	            item.SubItems[4].ForeColor = Color.Blue;
+	            item.SubItems[4].Font = new Font(item.SubItems[4].Font.FontFamily, item.SubItems[4].Font.Size, FontStyle.Underline);
+
             }
             
         }
@@ -183,28 +199,32 @@ namespace SpotifyList
                 (hit.SubItem == hit.Item.SubItems[3] |
                 hit.SubItem == hit.Item.SubItems[4] && hit.SubItem.Text != "null"))
             {
-                savedTracksListView.Cursor = Cursors.Hand;
+
+				savedTracksListView.Cursor = Cursors.Hand;
             }
             else
             {
-                savedTracksListView.Cursor = Cursors.Default;
+	            savedTracksListView.Cursor = Cursors.Default;
             }
 
         }
 
-        /// <summary>
-        /// Generates links on the fly when mouse over a valid link
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void SavedTracksListView_MouseUp(object sender, MouseEventArgs e)
-        {
-            var hit = savedTracksListView.HitTest(e.Location);
-            if (hit.SubItem != null && hit.SubItem == hit.Item.SubItems[1])
-            {
-                var url = new Uri(hit.SubItem.Text);
-                // etc..
-            }
-        }
-    }
+
+	    private void SavedTracksListView_MouseClick(object sender, MouseEventArgs e)
+	    {
+			var hit = savedTracksListView.HitTest(e.Location);
+		    if (hit.SubItem != null && hit.SubItem == hit.Item.SubItems[3])
+		    {
+			    var url = new Uri(hit.SubItem.Text);
+			    System.Diagnostics.Process.Start(url.ToString());
+		    }
+		    else if (hit.SubItem != null && hit.SubItem == hit.Item.SubItems[4] && hit.SubItem.Text != "null")
+		    {
+			    var url = new Uri("https://www.youtube.com/watch?v=" + hit.SubItem.Text);
+			    System.Diagnostics.Process.Start(url.ToString());
+
+		    }
+		}
+		#endregion
+	}
 }
