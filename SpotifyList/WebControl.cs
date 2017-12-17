@@ -57,8 +57,7 @@ namespace SpotifyList
                     string.Join(",",
                     track.Artists.Select(source => source.Name)),
                     track.Album.Name,
-                    track.Uri,
-                    "null"
+					track.Uri
                     }
             }));
 
@@ -180,7 +179,8 @@ namespace SpotifyList
                 var title = item.Text;
                 var artist = subItems[1].Text;
 
-                item.SubItems[4].Text =  await SearchYoutube(title + " " + artist);
+	            item.SubItems.Add(await SearchYoutube(title + " " + artist));
+//                item.SubItems[4].Text =  await SearchYoutube(title + " " + artist);
 
 				Debug.WriteLine("Searchig for: " + title + " " + artist);
 
@@ -195,9 +195,7 @@ namespace SpotifyList
         private void SavedTracksListView_MouseMove(object sender, MouseEventArgs e)
         {
             var hit = savedTracksListView.HitTest(e.Location);
-            if (hit.SubItem != null && 
-                (hit.SubItem == hit.Item.SubItems[3] |
-                hit.SubItem == hit.Item.SubItems[4] && hit.SubItem.Text != "null"))
+            if (hit.SubItem != null && (hit.SubItem == hit.Item.SubItems[3] || hit.SubItem == hit.Item.SubItems[4]))
             {
 
 				savedTracksListView.Cursor = Cursors.Hand;
@@ -210,7 +208,7 @@ namespace SpotifyList
         }
 
 
-	    private void SavedTracksListView_MouseClick(object sender, MouseEventArgs e)
+		private void SavedTracksListView_MouseClick(object sender, MouseEventArgs e)
 	    {
 			var hit = savedTracksListView.HitTest(e.Location);
 		    if (hit.SubItem != null && hit.SubItem == hit.Item.SubItems[3])
@@ -218,7 +216,7 @@ namespace SpotifyList
 			    var url = new Uri(hit.SubItem.Text);
 			    System.Diagnostics.Process.Start(url.ToString());
 		    }
-		    else if (hit.SubItem != null && hit.SubItem == hit.Item.SubItems[4] && hit.SubItem.Text != "null")
+		    else if (hit.SubItem != null && hit.SubItem == hit.Item.SubItems[4])
 		    {
 			    var url = new Uri("https://www.youtube.com/watch?v=" + hit.SubItem.Text);
 			    System.Diagnostics.Process.Start(url.ToString());
