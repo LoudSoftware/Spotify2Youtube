@@ -4,13 +4,9 @@ using SpotifyAPI.Web.Enums;
 using SpotifyAPI.Web.Models;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Helpers;
@@ -22,9 +18,9 @@ namespace SpotifyList
         private SpotifyWebAPI _spotify;
 
         private PrivateProfile _profile;
-	    private string _CLIENTID = "18b96889c87947fc98a5e436d7bdc613";
+	    private const string Clientid = "18b96889c87947fc98a5e436d7bdc613";
 
-        public List<FullTrack> SavedTracks { get; set; }
+	    public List<FullTrack> SavedTracks { get; set; }
 
 	    public WebControl()
         {
@@ -129,7 +125,7 @@ namespace SpotifyList
             var webApiFactory = new WebAPIFactory(
                 "http://localhost",
                 8000,
-                _CLIENTID,
+                Clientid,
                 Scope.UserReadPrivate | Scope.UserReadEmail | Scope.PlaylistReadPrivate | Scope.UserLibraryRead |
                 Scope.UserReadPrivate | Scope.UserFollowRead | Scope.UserReadBirthdate | Scope.UserTopRead | Scope.PlaylistReadCollaborative |
                 Scope.UserReadRecentlyPlayed | Scope.UserReadPlaybackState | Scope.UserModifyPlaybackState);
@@ -180,7 +176,6 @@ namespace SpotifyList
                 var artist = subItems[1].Text;
 
 	            item.SubItems.Add(await SearchYoutube(title + " " + artist));
-//                item.SubItems[4].Text =  await SearchYoutube(title + " " + artist);
 
 				Debug.WriteLine("Searchig for: " + title + " " + artist);
 
@@ -223,6 +218,34 @@ namespace SpotifyList
 
 		    }
 		}
+
+	    private async void DownloadAllBtn_Click(object sender, EventArgs e)
+	    {
+
+		    DownloadProgressBar.Maximum = 100;
+		    DownloadProgressBar.Step = 1;
+
+
+		    
+		    await new YoutubeDownload(DownloadProgressBar, "raf4SuR2Hso", "LinusTechTips", "Linus").Download();
+
+
+			/*foreach (ListViewItem item in savedTracksListView.Items)
+		    {
+				DownloadingLabel.Text = $"Downloading: {item.Text} by {item.Subitems[1].Text}";
+			    var id = item.SubItems[4].Text;
+
+			    var title = item.Text;
+			    var artist = item.SubItems[1].Text;
+
+				await new YoutubeDownload(DownloadProgressBar, id, title, artist).Download(); 
+			    
+		    }*/
+
+		}
+
+
 		#endregion
+
 	}
 }

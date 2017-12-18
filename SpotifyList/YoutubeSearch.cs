@@ -57,7 +57,11 @@ namespace Helpers
 
 			Debug.WriteLine($"Videos:\n{string.Join("\n", videos)}\n");
 
-            return videos;
+
+	        if (videos.Count == 0)
+		        videos.Add("notFound");
+
+	        return videos;
         }
     }
 }
