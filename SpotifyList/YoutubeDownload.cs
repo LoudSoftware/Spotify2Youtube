@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using MediaToolkit;
 using MediaToolkit.Model;
 using YoutubeExplode;
@@ -19,14 +15,16 @@ namespace SpotifyList
 		private readonly string _id;
 		private readonly string _title;
 		private readonly string _artist;
-		private readonly ProgressBar _progressBar;
 
-		public YoutubeDownload(ProgressBar progressBar, string id, string title, string artist)
+		private readonly Progress<double> _progress;
+
+
+		public YoutubeDownload(Progress<double> progress, string id, string title, string artist)
 		{
 			_id = id;
 			_title = title;
 			_artist = artist;
-			_progressBar = progressBar;
+			_progress = progress;
 
 			// Check if the Download Directory exists
 			if (!Directory.Exists(@".\Downloads"))
@@ -48,21 +46,12 @@ namespace SpotifyList
 
 			
 
-			var progress = new Progress<double>(p =>
-			{
-				
-				if (_progressBar.Value != (int) Math.Round(p*100) )
-				{
-					Debug.WriteLine((int) Math.Round(p*100));
-				}
-				_progressBar.Value = (int)Math.Round(p * 100);
-				
-			});
+			
 
 			var filename = $"{_title} - {_artist}";
 
 
-			await client.DownloadMediaStreamAsync(streamInfo, $@".\Downloads\{filename}.{ext}", progress);
+			await client.DownloadMediaStreamAsync(streamInfo, $@".\Downloads\{filename}.{ext}", _progress);
 
 			Debug.WriteLine("Download complete!");
 			Debug.WriteLine("Now converting the file");
@@ -71,7 +60,7 @@ namespace SpotifyList
 
 		}
 
-		public void ConvertToMp3(string filename, string ext)
+		private static void ConvertToMp3(string filename, string ext)
 		{
 			
 
@@ -83,8 +72,6 @@ namespace SpotifyList
 				engine.Convert(inputFile, outputFile);
 			}
 
-			
-			_progressBar.Value = 100;
 			
 		}
 

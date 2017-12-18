@@ -1,19 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
-using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
-using Google.Apis.Upload;
-using Google.Apis.Util.Store;
 using Google.Apis.YouTube.v3;
-using Google.Apis.YouTube.v3.Data;
 
-namespace Helpers
+namespace SpotifyList
 {
     /// <summary>
     /// YouTube Data API v3 sample: search by keyword.
@@ -41,7 +33,7 @@ namespace Helpers
             var youtubeService = new YouTubeService(new BaseClientService.Initializer()
             {
                 ApiKey = "AIzaSyBC1TEfgLkM8rIbPybAs4XosJ3yxO_yGO4",
-                ApplicationName = this.GetType().ToString()
+                ApplicationName = GetType().ToString()
             });
 
             var searchListRequest = youtubeService.Search.List("snippet");

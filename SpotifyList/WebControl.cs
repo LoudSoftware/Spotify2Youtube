@@ -9,7 +9,6 @@ using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Helpers;
 
 namespace SpotifyList
 {
@@ -17,7 +16,7 @@ namespace SpotifyList
     {
         private SpotifyWebAPI _spotify;
 
-        private PrivateProfile _profile;
+
 	    private const string Clientid = "18b96889c87947fc98a5e436d7bdc613";
 
 	    public List<FullTrack> SavedTracks { get; set; }
@@ -26,7 +25,10 @@ namespace SpotifyList
         {
             InitializeComponent();
 
-            SavedTracks = new List<FullTrack>();
+	        savedTracksListView.MouseClick += SavedTracksListView_MouseClick;
+	        savedTracksListView.MouseMove += SavedTracksListView_MouseMove;
+
+			SavedTracks = new List<FullTrack>();
 
         }
 
@@ -39,7 +41,7 @@ namespace SpotifyList
             }
 
             btnAuth.Enabled = false;
-            _profile = await _spotify.GetPrivateProfileAsync();
+
 
             SavedTracks = await GetSavedTracksAsync();
 
@@ -69,7 +71,7 @@ namespace SpotifyList
         /// </summary>
         /// <param name="query">The string we want to search for</param>
         /// <returns></returns>
-        private static async Task<string> SearchYoutube(string query)
+        private async Task<string> SearchYoutube(string query)
         {
             
 
@@ -103,7 +105,7 @@ namespace SpotifyList
         /// <returns>The list of all saved tracks</returns>
         private async Task<List<FullTrack>> GetSavedTracksAsync()
         {
-            var savedTracks = await _spotify.GetSavedTracksAsync(20);
+            var savedTracks = await _spotify.GetSavedTracksAsync();
             var list = savedTracks.Items.Select(track => track.Track).ToList();
 
             while (savedTracks.Next != null)
@@ -190,7 +192,7 @@ namespace SpotifyList
         private void SavedTracksListView_MouseMove(object sender, MouseEventArgs e)
         {
             var hit = savedTracksListView.HitTest(e.Location);
-            if (hit.SubItem != null && (hit.SubItem == hit.Item.SubItems[3] || hit.SubItem == hit.Item.SubItems[4]))
+            if (hit.SubItem != null && (hit.SubItem == hit.Item.SubItems[3] || hit.Item.SubItems.Count == 5))
             {
 
 				savedTracksListView.Cursor = Cursors.Hand;
@@ -209,12 +211,12 @@ namespace SpotifyList
 		    if (hit.SubItem != null && hit.SubItem == hit.Item.SubItems[3])
 		    {
 			    var url = new Uri(hit.SubItem.Text);
-			    System.Diagnostics.Process.Start(url.ToString());
+			    Process.Start(url.ToString());
 		    }
 		    else if (hit.SubItem != null && hit.SubItem == hit.Item.SubItems[4])
 		    {
 			    var url = new Uri("https://www.youtube.com/watch?v=" + hit.SubItem.Text);
-			    System.Diagnostics.Process.Start(url.ToString());
+			    Process.Start(url.ToString());
 
 		    }
 		}
@@ -225,25 +227,42 @@ namespace SpotifyList
 		    DownloadProgressBar.Maximum = 100;
 		    DownloadProgressBar.Step = 1;
 
+		    var progress = new Progress<double>(p => DownloadProgressBar.Value = (int) Math.Round(p * 100));
+
 
 		    
-		    await new YoutubeDownload(DownloadProgressBar, "raf4SuR2Hso", "LinusTechTips", "Linus").Download();
 
 
-			/*foreach (ListViewItem item in savedTracksListView.Items)
-		    {
-				DownloadingLabel.Text = $"Downloading: {item.Text} by {item.Subitems[1].Text}";
-			    var id = item.SubItems[4].Text;
+			foreach (ListViewItem item in savedTracksListView.Items)
+            {
 
-			    var title = item.Text;
-			    var artist = item.SubItems[1].Text;
+	            var title = item.Text;
+	            var artist = item.SubItems[1].Text;
 
-				await new YoutubeDownload(DownloadProgressBar, id, title, artist).Download(); 
-			    
-		    }*/
+				DownloadingLabel.Text = $"Downloading: {title} by {artist}";
+
+	            string id;
+
+				try
+	            {
+		            id = item.SubItems[4].Text;
+				}
+	            catch (ArgumentException exception)
+	            {
+					Debug.WriteLine(exception.Message);
+		            continue;
+	            }
+
+
+	            
+
+				await Task.Run(async() => await new YoutubeDownload(progress, id, title, artist).Download());
+            }
+
+
+
 
 		}
-
 
 		#endregion
 
