@@ -163,6 +163,7 @@
 			this.Controls.Add(this.savedTracksListView);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.btnAuth);
+			this.DoubleBuffered = true;
 			this.Name = "WebControl";
 			this.Text = "Spotify Library Explorer";
 			this.ResumeLayout(false);

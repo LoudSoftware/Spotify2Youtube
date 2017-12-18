@@ -19,7 +19,18 @@ namespace SpotifyList
 
 	    private const string Clientid = "18b96889c87947fc98a5e436d7bdc613";
 
-	    public List<FullTrack> SavedTracks { get; set; }
+		// This is some magic voodoo shit I found on SOF this kinda fixes the flickering.
+	    protected override CreateParams CreateParams
+	    {
+		    get
+		    {
+			    var cp = base.CreateParams;
+			    cp.ExStyle = cp.ExStyle | 0x2000000;
+			    return cp;
+		    }
+	    }
+
+		public List<FullTrack> SavedTracks { get; set; }
 
 	    public WebControl()
         {
@@ -27,6 +38,8 @@ namespace SpotifyList
 
 	        savedTracksListView.MouseClick += SavedTracksListView_MouseClick;
 	        savedTracksListView.MouseMove += SavedTracksListView_MouseMove;
+
+
 
 			SavedTracks = new List<FullTrack>();
 
@@ -239,7 +252,7 @@ namespace SpotifyList
 	            var title = item.Text;
 	            var artist = item.SubItems[1].Text;
 
-				DownloadingLabel.Text = $"Downloading: {title} by {artist}";
+				DownloadingLabel.Text = $@"Downloading: {title} by {artist}";
 
 	            string id;
 
@@ -258,6 +271,8 @@ namespace SpotifyList
 
 				await Task.Run(async() => await new YoutubeDownload(progress, id, title, artist).Download());
             }
+
+
 
 
 
