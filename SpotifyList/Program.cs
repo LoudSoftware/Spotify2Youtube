@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-
-namespace SpotifyList
+namespace Spotify2Youtube
 {
     static class Program
     {

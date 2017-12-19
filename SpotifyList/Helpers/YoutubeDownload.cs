@@ -1,29 +1,34 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using MediaToolkit;
 using MediaToolkit.Model;
+using SpotifyAPI.Web.Models;
 using YoutubeExplode;
 using YoutubeExplode.Models.MediaStreams;
 
-
-namespace SpotifyList
+namespace Spotify2Youtube.Helpers
 {
 	internal class YoutubeDownload
 	{
 		private readonly string _id;
 		private readonly string _title;
-		private readonly string _artist;
+		private readonly string[] _artists;
 
 		private readonly Progress<double> _progress;
+		private readonly FullTrack _track;
 
 
-		public YoutubeDownload(Progress<double> progress, string id, string title, string artist)
+		public YoutubeDownload(Progress<double> progress,string videoId, FullTrack track)
 		{
-			_id = id;
-			_title = title;
-			_artist = artist;
+			_track = track;
+
+			_id = videoId;
+			_title = track.Name;
+			_artists = track.Artists.Select(source => source.Name).ToArray();
+
 			_progress = progress;
 
 			// Check if the Download Directory exists
@@ -44,12 +49,10 @@ namespace SpotifyList
 			var streamInfo = streamInfoSet.Audio.WithHighestBitrate();
 			var ext = streamInfo.Container.GetFileExtension();
 
-			
 
-			
+			var artists = string.Join(",", _artists);
 
-			var filename = $"{_title} - {_artist}";
-
+			var filename = $"{_title} - {artists}";
 
 			await client.DownloadMediaStreamAsync(streamInfo, $@".\Downloads\{filename}.{ext}", _progress);
 
@@ -60,7 +63,7 @@ namespace SpotifyList
 
 		}
 
-		private static void ConvertToMp3(string filename, string ext)
+		private void ConvertToMp3(string filename, string ext)
 		{
 			
 
@@ -72,7 +75,7 @@ namespace SpotifyList
 				engine.Convert(inputFile, outputFile);
 			}
 
-			
+			TagMp3.Tag(outputFile, _track);
 		}
 
 

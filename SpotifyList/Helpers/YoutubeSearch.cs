@@ -4,19 +4,20 @@ using System.Linq;
 using System.Threading.Tasks;
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
+using Spotify2Youtube.Exceptions;
 
-namespace SpotifyList
+namespace Spotify2Youtube.Helpers
 {
-    /// <summary>
-    /// YouTube Data API v3 sample: search by keyword.
-    /// Relies on the Google APIs Client Library for .NET, v1.7.0 or higher.
-    /// See https://developers.google.com/api-client-library/dotnet/get_started
-    ///
-    /// Set ApiKey to the API key value from the APIs & auth > Registered apps tab of
-    ///   https://cloud.google.com/console
-    /// Please ensure that you have enabled the YouTube Data API for your project.
-    /// </summary>
-    internal class YoutubeSearch
+	/// <summary>
+	/// YouTube Data API v3 sample: search by keyword.
+	/// Relies on the Google APIs Client Library for .NET, v1.7.0 or higher.
+	/// See https://developers.google.com/api-client-library/dotnet/get_started
+	///
+	/// Set ApiKey to the API key value from the APIs & auth > Registered apps tab of
+	///   https://cloud.google.com/console
+	/// Please ensure that you have enabled the YouTube Data API for your project.
+	/// </summary>
+	internal class YoutubeSearch
     {
         private readonly string _query;
         public YoutubeSearch(string queryString)
@@ -38,7 +39,7 @@ namespace SpotifyList
 
             var searchListRequest = youtubeService.Search.List("snippet");
             searchListRequest.Q = _query; // Replace with your search term.
-            searchListRequest.MaxResults = 4;
+            searchListRequest.MaxResults = 1;
 
             // Call the search.list method to retrieve results matching the specified query term.
             var searchListResponse = await searchListRequest.ExecuteAsync();
@@ -50,10 +51,10 @@ namespace SpotifyList
 			Debug.WriteLine($"Videos:\n{string.Join("\n", videos)}\n");
 
 
-	        if (videos.Count == 0)
-		        videos.Add("notFound");
-
-	        return videos;
+	        if (videos.Count != 0) return videos;
+	        videos.Add("notFound");
+			throw new YoutubeSearchNotFoundException($"Could not find: {_query} on YouTube");
+	        
         }
-    }
+	}
 }

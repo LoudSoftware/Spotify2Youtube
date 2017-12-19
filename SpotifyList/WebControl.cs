@@ -1,16 +1,18 @@
-﻿using SpotifyAPI.Web;
-using SpotifyAPI.Web.Auth;
-using SpotifyAPI.Web.Enums;
-using SpotifyAPI.Web.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Spotify2Youtube.Exceptions;
+using Spotify2Youtube.Helpers;
+using SpotifyAPI.Web;
+using SpotifyAPI.Web.Auth;
+using SpotifyAPI.Web.Enums;
+using SpotifyAPI.Web.Models;
 
-namespace SpotifyList
+namespace Spotify2Youtube
 {
     public partial class WebControl : Form
     {
@@ -30,7 +32,7 @@ namespace SpotifyList
 		    }
 	    }
 
-		public List<FullTrack> SavedTracks { get; set; }
+	    private List<FullTrack> SavedTracks { get; set; }
 
 	    public WebControl()
         {
@@ -60,22 +62,29 @@ namespace SpotifyList
 
 
             savedTracksCountLabel.Text  = SavedTracks.Count.ToString();
-            SavedTracks.ForEach(track => savedTracksListView.Items.Add(new ListViewItem()
+            SavedTracks.ForEach(track =>
             {
-                Text = track.Name,
-                SubItems =
-                    {
-                    string.Join(",",
-                    track.Artists.Select(source => source.Name)),
-                    track.Album.Name,
-					track.Uri
-                    }
-            }));
+	            savedTracksListView.Items.Add(new ListViewItem()
+	            {
+		            Tag = track,
+		            Text = track.Name,
+		            SubItems =
+		            {
+			            string.Join(",",
+				            track.Artists.Select(source => source.Name)),
+			            track.Album.Name,
+			            track.Uri
+		            }
+	            });
+				
+	            
+			});
 
 	        foreach (ListViewItem item in savedTracksListView.Items)
 	        {
 		        item.UseItemStyleForSubItems = false;
 		        item.SubItems[3].ForeColor = Color.Blue;
+		      
 	        }
 		}
 
@@ -84,7 +93,7 @@ namespace SpotifyList
         /// </summary>
         /// <param name="query">The string we want to search for</param>
         /// <returns></returns>
-        private async Task<string> SearchYoutube(string query)
+        private static async Task<string> SearchYoutube(string query)
         {
             
 
@@ -190,14 +199,22 @@ namespace SpotifyList
                 var title = item.Text;
                 var artist = subItems[1].Text;
 
-	            item.SubItems.Add(await SearchYoutube(title + " " + artist));
 
-				Debug.WriteLine("Searchig for: " + title + " " + artist);
+	            try
+	            {
+		            Debug.WriteLine("Searchig for: " + title + " " + artist);
 
-	            item.UseItemStyleForSubItems = false;
-	            item.SubItems[4].ForeColor = Color.Blue;
-	            item.SubItems[4].Font = new Font(item.SubItems[4].Font.FontFamily, item.SubItems[4].Font.Size, FontStyle.Underline);
-
+					item.SubItems.Add(await SearchYoutube(title + " " + artist));
+		           
+		            item.UseItemStyleForSubItems = false;
+		            item.SubItems[4].ForeColor = Color.Blue;
+		            item.SubItems[4].Font = new Font(item.SubItems[4].Font.FontFamily, item.SubItems[4].Font.Size, FontStyle.Underline);
+				}
+				catch (YoutubeSearchNotFoundException ex)
+	            {
+		            Debug.WriteLine(ex.Message);
+		            item.BackColor = Color.Red;
+	            }
             }
             
         }
@@ -269,7 +286,7 @@ namespace SpotifyList
 
 	            
 
-				await Task.Run(async() => await new YoutubeDownload(progress, id, title, artist).Download());
+				await Task.Run(async() => await new YoutubeDownload(progress, id, (FullTrack) item.Tag).Download());
             }
 
 
