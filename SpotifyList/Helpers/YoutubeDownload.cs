@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Google.Apis.YouTube.v3.Data;
 using MediaToolkit;
 using MediaToolkit.Model;
 using SpotifyAPI.Web.Models;
@@ -54,29 +55,45 @@ namespace Spotify2Youtube.Helpers
 
 			var filename = $"{_title} - {artists}";
 
+
 			await client.DownloadMediaStreamAsync(streamInfo, $@".\Downloads\{filename}.{ext}", _progress);
 
 			Debug.WriteLine("Download complete!");
 			Debug.WriteLine("Now converting the file");
-			ConvertToMp3(filename, ext);
+			Task.Run(() => ConvertToMp3(filename, ext));
 
 
 		}
 
-		private void ConvertToMp3(string filename, string ext)
+		private async Task ConvertToMp3(string filename, string ext)
 		{
 			
 
 			var inputFile = new MediaFile { Filename = $@".\Downloads\{filename}.{ext}" };
 			var outputFile = new MediaFile { Filename = $@".\Converted\{filename}.mp3" };
 
-			using (var engine = new Engine())
+			Action convert = () =>
 			{
-				engine.Convert(inputFile, outputFile);
-			}
+				using (var engine = new Engine())
+				{
+					engine.Convert(inputFile, outputFile);
+				}
+			};
 
-			TagMp3.Tag(outputFile, _track);
+			Task.Factory.StartNew(convert).Wait();
+
+			Action tagFile = () =>
+			{
+				TagMp3.Tag(outputFile, _track);
+			};
+
+			Task.Factory.StartNew(tagFile);
+
+
+			return;
 		}
+		
+		
 
 
 		

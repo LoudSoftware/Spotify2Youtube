@@ -243,7 +243,7 @@ namespace Spotify2Youtube
 			    var url = new Uri(hit.SubItem.Text);
 			    Process.Start(url.ToString());
 		    }
-		    else if (hit.SubItem != null && hit.SubItem == hit.Item.SubItems[4])
+		    else if (hit.SubItem != null && hit.Item.SubItems.Count == 4)
 		    {
 			    var url = new Uri("https://www.youtube.com/watch?v=" + hit.SubItem.Text);
 			    Process.Start(url.ToString());
@@ -282,17 +282,10 @@ namespace Spotify2Youtube
 					Debug.WriteLine(exception.Message);
 		            continue;
 	            }
-
-
 	            
-
-				await Task.Run(async() => await new YoutubeDownload(progress, id, (FullTrack) item.Tag).Download());
+				// TODO Download first and then convert all
+				Task.Run(() => new YoutubeDownload(progress, id, (FullTrack) item.Tag).Download());
             }
-
-
-
-
-
 
 		}
 

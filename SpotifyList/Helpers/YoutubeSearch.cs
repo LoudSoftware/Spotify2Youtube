@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
+using Google.Apis.YouTube.v3.Data;
 using Spotify2Youtube.Exceptions;
 
 namespace Spotify2Youtube.Helpers
@@ -40,13 +41,16 @@ namespace Spotify2Youtube.Helpers
             var searchListRequest = youtubeService.Search.List("snippet");
             searchListRequest.Q = _query; // Replace with your search term.
             searchListRequest.MaxResults = 1;
+	        searchListRequest.VideoDuration = SearchResource.ListRequest.VideoDurationEnum.Short__; // TODO make a second search list for medium songs and combine the 2
+	        searchListRequest.Type = "video";
 
             // Call the search.list method to retrieve results matching the specified query term.
             var searchListResponse = await searchListRequest.ExecuteAsync();
 
-
 			// Add each result to the appropriate list, and then display the lists of matching videos.
-			var videos = (from searchResult in searchListResponse.Items where searchResult.Id.Kind == "youtube#video" select $"{searchResult.Id.VideoId}").ToList();
+			var videos = (from searchResult in searchListResponse.Items
+				where searchResult.Id.Kind == "youtube#video"
+				select $"{searchResult.Id.VideoId}").ToList();
 
 			Debug.WriteLine($"Videos:\n{string.Join("\n", videos)}\n");
 
