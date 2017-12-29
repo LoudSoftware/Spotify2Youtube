@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Google.Apis.YouTube.v3.Data;
 using MediaToolkit;
 using MediaToolkit.Model;
+using Spotify2Youtube.Configs;
 using SpotifyAPI.Web.Models;
 using YoutubeExplode;
 using YoutubeExplode.Models.MediaStreams;
@@ -29,16 +30,7 @@ namespace Spotify2Youtube.Helpers
 			_id = videoId;
 			_title = track.Name;
 			_artists = track.Artists.Select(source => source.Name).ToArray();
-
 			_progress = progress;
-
-			// Check if the Download Directory exists
-			if (!Directory.Exists(@".\Downloads"))
-				Directory.CreateDirectory(@".\Downloads");
-
-			// Check if the Converted Directory exists
-			if (!Directory.Exists(@".\Converted"))
-				Directory.CreateDirectory(@".\Converted");
 		}
 
 		public async Task Download()
@@ -55,47 +47,20 @@ namespace Spotify2Youtube.Helpers
 
 			var filename = $"{_title} - {artists}";
 
+			var inputFile = $@"{MainConfig.DownloadDir}\{filename}.{ext}";
+			var outputFile = $@"{MainConfig.ConvertedDir}\{filename}.mp3";
 
-			await client.DownloadMediaStreamAsync(streamInfo, $@".\Downloads\{filename}.{ext}", _progress);
+
+			await client.DownloadMediaStreamAsync(streamInfo, $@"{MainConfig.DownloadDir}\{filename}.{ext}", _progress);
 
 			Debug.WriteLine("Download complete!");
 			Debug.WriteLine("Now converting the file");
-			Task.Run(() => ConvertToMp3(filename, ext));
 
+
+			await Task.Run(async () => await FileConverter.ConvertToMp3(inputFile, outputFile));
+
+			await Task.Run(() => TagMp3.Tag(outputFile, _track));
 
 		}
-
-		private async Task ConvertToMp3(string filename, string ext)
-		{
-			
-
-			var inputFile = new MediaFile { Filename = $@".\Downloads\{filename}.{ext}" };
-			var outputFile = new MediaFile { Filename = $@".\Converted\{filename}.mp3" };
-
-			Action convert = () =>
-			{
-				using (var engine = new Engine())
-				{
-					engine.Convert(inputFile, outputFile);
-				}
-			};
-
-			Task.Factory.StartNew(convert).Wait();
-
-			Action tagFile = () =>
-			{
-				TagMp3.Tag(outputFile, _track);
-			};
-
-			Task.Factory.StartNew(tagFile);
-
-
-			return;
-		}
-		
-		
-
-
-		
 	}
 }
