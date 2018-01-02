@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Spotify2Youtube.Configs;
+using Spotify2Youtube.Properties;
 using SpotifyAPI.Web.Models;
 using YoutubeExplode;
 using YoutubeExplode.Models.MediaStreams;
@@ -43,11 +43,12 @@ namespace Spotify2Youtube.Helpers
 
 			var filename = $"{_title} - {artists}";
 
-			var inputFile = $@"{MainConfig.DownloadDir}\{filename}.{ext}";
-			var outputFile = $@"{MainConfig.ConvertedDir}\{filename}.mp3";
+
+			var inputFile = $@"{Settings.Default.DownloadPath}\{filename}.{ext}";
+			var outputFile = $@"{Settings.Default.ConvertedPath}\{filename}.mp3";
 
 
-			await client.DownloadMediaStreamAsync(streamInfo, $@"{MainConfig.DownloadDir}\{filename}.{ext}", _progress);
+			await client.DownloadMediaStreamAsync(streamInfo, $@"{Settings.Default.DownloadPath}\{filename}.{ext}", _progress);
 
 			Debug.WriteLine("Download complete!");
 			Debug.WriteLine("Now converting the file");

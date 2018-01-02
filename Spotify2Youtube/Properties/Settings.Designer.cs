@@ -22,5 +22,29 @@ namespace Spotify2Youtube.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DownloadPath {
+            get {
+                return ((string)(this["DownloadPath"]));
+            }
+            set {
+                this["DownloadPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ConvertedPath {
+            get {
+                return ((string)(this["ConvertedPath"]));
+            }
+            set {
+                this["ConvertedPath"] = value;
+            }
+        }
     }
 }

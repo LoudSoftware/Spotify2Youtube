@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
-using Spotify2Youtube.Configs;
+using Spotify2Youtube.Properties;
 using Xabe.FFmpeg;
 
 namespace Spotify2Youtube
@@ -13,9 +14,6 @@ namespace Spotify2Youtube
 		/// The main entry point for the application.
 		/// </summary>
 		/// 
-
-
-
 		[STAThread]
 		private static void Main()
 		{
@@ -32,14 +30,19 @@ namespace Spotify2Youtube
 			if (!Directory.Exists(convertedDir))
 				Directory.CreateDirectory(convertedDir);
 
-			MainConfig.DownloadDir = downloadDir;
-			MainConfig.ConvertedDir = convertedDir;
+
+			Settings.Default.DownloadPath = downloadDir;
+			Settings.Default.ConvertedPath = convertedDir;
+
+			Debug.WriteLine(Settings.Default.DownloadPath);
+			Debug.WriteLine(Settings.Default.ConvertedPath);
+
+			Settings.Default.Save();
 
 
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 			Application.Run(new WebControl());
-
 		}
 	}
 }
