@@ -23,8 +23,6 @@ namespace Spotify2Youtube.Helpers
 					.SetInput(inputFile)
 					.SetOutput(outputFile)
 					.Start();
-
-
 			}
 			catch (FileAlreadyConvertedException e)
 			{
@@ -33,7 +31,6 @@ namespace Spotify2Youtube.Helpers
 			}
 
 			return result;
-
 		}
 
 		private static void TestExistence(string inputFile, string outputFile)

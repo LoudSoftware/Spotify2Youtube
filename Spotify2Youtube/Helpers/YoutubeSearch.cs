@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
-using Google.Apis.YouTube.v3.Data;
 using Spotify2Youtube.Exceptions;
+using static Google.Apis.YouTube.v3.SearchResource.ListRequest;
 
 namespace Spotify2Youtube.Helpers
 {
@@ -21,13 +21,13 @@ namespace Spotify2Youtube.Helpers
 	internal class YoutubeSearch
 	{
 		private readonly string _query;
+
 		public YoutubeSearch(string queryString)
 		{
 			Debug.WriteLine("YouTube Data API: Search");
 			Debug.WriteLine("========================");
 
-			_query = queryString;         
-
+			_query = queryString;
 		}
 
 		public async Task<List<string>> Run()
@@ -39,26 +39,41 @@ namespace Spotify2Youtube.Helpers
 			});
 
 			var searchListRequest = youtubeService.Search.List("snippet");
-			searchListRequest.Q = _query; // Replace with your search term.
+			searchListRequest.Q = _query;
 			searchListRequest.MaxResults = 1;
-			searchListRequest.VideoDuration = SearchResource.ListRequest.VideoDurationEnum.Short__; // TODO make a second search list for medium songs and combine the 2
+			searchListRequest.VideoDuration =
+				VideoDurationEnum.Short__; // TODO make a second search list for medium songs and combine the 2
 			searchListRequest.Type = "video";
 
-			// Call the search.list method to retrieve results matching the specified query term.
+
+			// Search for Short Length videos
 			var searchListResponse = await searchListRequest.ExecuteAsync();
 
 			// Add each result to the appropriate list, and then display the lists of matching videos.
-			var videos = (from searchResult in searchListResponse.Items
+			var shortVideos = (from searchResult in searchListResponse.Items
 				where searchResult.Id.Kind == "youtube#video"
 				select $"{searchResult.Id.VideoId}").ToList();
 
-			Debug.WriteLine($"Videos:\n{string.Join("\n", videos)}\n");
+
+			// Search for Medium Length videos
+			searchListRequest.VideoDuration = VideoDurationEnum.Medium;
+			searchListResponse = await searchListRequest.ExecuteAsync();
+
+			var mediumVideos = (from searchResult in searchListResponse.Items
+				where searchResult.Id.Kind == "youtube#video"
+				select $"{searchResult.Id.VideoId}").ToList();
+
+
+			// Merging the 2 searches starting with the medium length videos
+			var videos = mediumVideos.Concat(shortVideos).ToList();
+
+			// Printing the search results to the Debug Log
+			Debug.WriteLine($"Videos:\n{string.Join("\n", shortVideos)}\n");
 
 
 			if (videos.Count != 0) return videos;
 			videos.Add("notFound");
 			throw new YoutubeSearchNotFoundException($"Could not find: {_query} on YouTube");
-			
 		}
 	}
 }

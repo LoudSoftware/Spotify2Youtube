@@ -10,7 +10,6 @@ using Spotify2Youtube.Helpers;
 using Xabe.FFmpeg;
 
 
-
 namespace Spotify2YoutubeTests.Helpers
 {
 	[TestClass]
@@ -19,16 +18,14 @@ namespace Spotify2YoutubeTests.Helpers
 		[TestMethod]
 		public async Task ConvertToMp3Test()
 		{
-
 			Debug.WriteLine(FFbase.FFmpegDir);
 
 			const string inputFile = @"C:\Users\nicoz\Music\The #FRIENDZONE.mp3";
 			const string outputFile = @"C:\Users\nicoz\Music\The #FRIENDZONE.aac";
 
-			var result =  await FileConverter.ConvertToMp3(inputFile, outputFile);
+			var result = await FileConverter.ConvertToMp3(inputFile, outputFile);
 
 			if (!result) Assert.Fail();
-
 		}
 	}
 }

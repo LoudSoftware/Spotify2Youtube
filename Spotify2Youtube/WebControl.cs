@@ -83,11 +83,14 @@ namespace Spotify2Youtube
 			}
 		}
 
+
+		/*
+		 */
 		/// <summary>
 		/// Starts a youtube search with the given query
 		/// </summary>
-		/// <param name="query">The string we want to search for</param>
-		/// <returns></returns>
+		/// <param name="query">The search query</param>
+		/// <returns>A list containning the search results</returns>
 		private static async Task<string> SearchYoutube(string query)
 		{
 			var results = new List<string>();
@@ -129,12 +132,12 @@ namespace Spotify2Youtube
 			return list;
 		}
 
+
 		/// <summary>
 		/// Runs the authentication process
 		/// </summary>
 		private async void RunAuthentication()
 		{
-			//TODO needs to be seperated in it's own class and have it save whatever we need to be able to no have to do this every time.
 			Debug.WriteLine("Started authentication Task.");
 			var webApiFactory = new WebAPIFactory(
 				"http://localhost",
@@ -161,7 +164,6 @@ namespace Spotify2Youtube
 				return;
 			}
 
-
 			InitialSetup();
 		}
 
@@ -173,11 +175,10 @@ namespace Spotify2Youtube
 			Task.Run(() => RunAuthentication());
 		}
 
-		/// <summary>
-		/// Starts the a youtube search when the search youtube button is clicked
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
+
+		/*
+		 * Starts the a youtube search when the search youtube button is clicked
+		 */
 		private async void BtnYoutubeSearch_Click(object sender, EventArgs e)
 		{
 			foreach (ListViewItem item in savedTracksListView.Items)
@@ -192,7 +193,7 @@ namespace Spotify2Youtube
 				{
 					Debug.WriteLine("Searchig for: " + title + " " + artist);
 
-					item.SubItems.Add(await SearchYoutube(title + " " + artist));
+					item.SubItems.Add(await SearchYoutube(title + " " + artist)); // TODO figure out if we can skip this await call
 
 					item.UseItemStyleForSubItems = false;
 					item.SubItems[4].ForeColor = Color.Blue;
@@ -207,6 +208,10 @@ namespace Spotify2Youtube
 			}
 		}
 
+
+		/*
+		 * Shows a hand cursor on clickable links if there are any
+		 */
 		private void SavedTracksListView_MouseMove(object sender, MouseEventArgs e)
 		{
 			var hit = savedTracksListView.HitTest(e.Location);
@@ -221,6 +226,9 @@ namespace Spotify2Youtube
 		}
 
 
+		/*
+		 * Gets the URL the user clicked on and opens the browser or the app with the URL
+		 */
 		private void SavedTracksListView_MouseClick(object sender, MouseEventArgs e)
 		{
 			var hit = savedTracksListView.HitTest(e.Location);
@@ -229,19 +237,21 @@ namespace Spotify2Youtube
 				var url = new Uri(hit.SubItem.Text);
 				Process.Start(url.ToString());
 			}
-			else if (hit.SubItem != null && hit.Item.SubItems.Count == 4)
+			else if (hit.SubItem != null && hit.Item.SubItems.Count == 5)
 			{
+				if (hit.SubItem != hit.Item.SubItems[4]) return;
 				var url = new Uri("https://www.youtube.com/watch?v=" + hit.SubItem.Text);
 				Process.Start(url.ToString());
 			}
 		}
 
-		private void DownloadAllBtn_Click(object sender, EventArgs e)
+
+		private async void DownloadAllBtn_Click(object sender, EventArgs e)
 		{
 			DownloadProgressBar.Maximum = 100;
 			DownloadProgressBar.Step = 1;
 
-			var progress = new Progress<double>(p => DownloadProgressBar.Value = (int) Math.Round(p * 100));
+			var progress = new Progress<double>(p => DownloadProgressBar.Value = (int) Math.Round(p * 85));
 
 
 			foreach (ListViewItem item in savedTracksListView.Items)
@@ -249,7 +259,7 @@ namespace Spotify2Youtube
 				var title = item.Text;
 				var artist = item.SubItems[1].Text;
 
-				DownloadingLabel.Text = $@"Downloading: {title} by {artist}";
+				DownloadingLabel.Text = $@"Downloading and converting: {title} by {artist}";
 
 				string id;
 
@@ -263,7 +273,9 @@ namespace Spotify2Youtube
 					continue;
 				}
 
-				Task.Run(() => new YoutubeDownload(progress, id, (FullTrack) item.Tag).Download()).Wait();
+				await Task.Run(() => new YoutubeDownload(progress, id, (FullTrack) item.Tag).Download());
+
+				DownloadProgressBar.Value = 100;
 			}
 		}
 

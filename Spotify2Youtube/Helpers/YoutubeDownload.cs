@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Google.Apis.YouTube.v3.Data;
-using MediaToolkit;
-using MediaToolkit.Model;
 using Spotify2Youtube.Configs;
 using SpotifyAPI.Web.Models;
 using YoutubeExplode;
@@ -23,7 +19,7 @@ namespace Spotify2Youtube.Helpers
 		private readonly FullTrack _track;
 
 
-		public YoutubeDownload(Progress<double> progress,string videoId, FullTrack track)
+		public YoutubeDownload(Progress<double> progress, string videoId, FullTrack track)
 		{
 			_track = track;
 
@@ -60,7 +56,6 @@ namespace Spotify2Youtube.Helpers
 			await Task.Run(async () => await FileConverter.ConvertToMp3(inputFile, outputFile));
 
 			await Task.Run(() => TagMp3.Tag(outputFile, _track));
-
 		}
 	}
 }
