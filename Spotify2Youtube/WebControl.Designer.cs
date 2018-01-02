@@ -1,33 +1,33 @@
 ﻿namespace Spotify2Youtube
 {
-    partial class WebControl
-    {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        private System.ComponentModel.IContainer components = null;
+	partial class WebControl
+	{
+		/// <summary>
+		/// Required designer variable.
+		/// </summary>
+		private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+		/// <summary>
+		/// Clean up any resources being used.
+		/// </summary>
+		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing && (components != null))
+			{
+				components.Dispose();
+			}
+			base.Dispose(disposing);
+		}
 
-        #region Windows Form Designer generated code
+		#region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent()
-        {
+		/// <summary>
+		/// Required method for Designer support - do not modify
+		/// the contents of this method with the code editor.
+		/// </summary>
+		private void InitializeComponent()
+		{
 			this.btnAuth = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
 			this.savedTracksListView = new System.Windows.Forms.ListView();
@@ -66,11 +66,11 @@
 			// savedTracksListView
 			// 
 			this.savedTracksListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.ListTitle,
-            this.ListArtist,
-            this.ListAlbum,
-            this.ListURI,
-            this.ListYoutubeResult});
+			this.ListTitle,
+			this.ListArtist,
+			this.ListAlbum,
+			this.ListURI,
+			this.ListYoutubeResult});
 			this.savedTracksListView.Cursor = System.Windows.Forms.Cursors.Default;
 			this.savedTracksListView.FullRowSelect = true;
 			this.savedTracksListView.Location = new System.Drawing.Point(15, 25);
@@ -169,20 +169,20 @@
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
-        }
+		}
 
 		#endregion
 
 		private System.Windows.Forms.Button btnAuth;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ListView savedTracksListView;
-        private System.Windows.Forms.ColumnHeader ListTitle;
-        private System.Windows.Forms.ColumnHeader ListArtist;
-        private System.Windows.Forms.ColumnHeader ListAlbum;
-        private System.Windows.Forms.ColumnHeader ListURI;
-        private System.Windows.Forms.ColumnHeader ListYoutubeResult;
-        private System.Windows.Forms.Label savedTracksCountLabel;
-        private System.Windows.Forms.Button BtnYoutubeSearch;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.ListView savedTracksListView;
+		private System.Windows.Forms.ColumnHeader ListTitle;
+		private System.Windows.Forms.ColumnHeader ListArtist;
+		private System.Windows.Forms.ColumnHeader ListAlbum;
+		private System.Windows.Forms.ColumnHeader ListURI;
+		private System.Windows.Forms.ColumnHeader ListYoutubeResult;
+		private System.Windows.Forms.Label savedTracksCountLabel;
+		private System.Windows.Forms.Button BtnYoutubeSearch;
 		private System.Windows.Forms.Button DownloadAllBtn;
 		private System.Windows.Forms.ProgressBar DownloadProgressBar;
 		private System.Windows.Forms.Label DownloadingLabel;

@@ -6,9 +6,9 @@ namespace Spotify2Youtube.Helpers
 {
 	public static class TagMp3
 	{
-		public static void Tag(MediaFile mediaFile, FullTrack track)
+		public static void Tag(string inputFile, FullTrack track)
 		{
-			var file = TagLib.File.Create(mediaFile.Filename);
+			var file = TagLib.File.Create(inputFile);
 
 
 			file.Tag.Title = track.Name;
