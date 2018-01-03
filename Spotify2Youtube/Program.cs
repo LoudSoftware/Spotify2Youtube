@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using System.Windows.Forms;
 using Spotify2Youtube.Properties;
-using Xabe.FFmpeg;
 
 namespace Spotify2Youtube
 {
