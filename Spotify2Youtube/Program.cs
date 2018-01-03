@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
@@ -36,6 +37,14 @@ namespace Spotify2Youtube
 			Debug.WriteLine(Settings.Default.ConvertedPath);
 
 			Settings.Default.Save();
+
+
+			var config = ConfigurationManager.OpenExeConfiguration(Application.ExecutablePath);
+			Console.WriteLine(config.AppSettings.Settings["youtubeApi"].Value);
+			config.AppSettings.Settings["youtubeApi"].Value = "Hello world";
+			Console.WriteLine(config.AppSettings.Settings["youtubeApi"].Value);
+			config.Save(ConfigurationSaveMode.Modified);
+			ConfigurationManager.RefreshSection("appSettings");
 
 
 			Application.EnableVisualStyles();
