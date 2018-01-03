@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
@@ -18,8 +19,10 @@ namespace Spotify2Youtube
 	{
 		private SpotifyWebAPI _spotify;
 
+		// Grabbing the custom config and the neccessary API keys from it
+		private static readonly Configuration Config = ConfigurationManager.OpenExeConfiguration(Application.ExecutablePath);
+		private static readonly string Clientid = Config.AppSettings.Settings["spotifyApi"].Value;
 
-		private const string Clientid = "18b96889c87947fc98a5e436d7bdc613";
 
 		// This is some magic voodoo shit I found on SOF this kinda fixes the flickering.
 		protected override CreateParams CreateParams

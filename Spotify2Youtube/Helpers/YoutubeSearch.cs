@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 using Spotify2Youtube.Exceptions;
@@ -22,6 +24,10 @@ namespace Spotify2Youtube.Helpers
 	{
 		private readonly string _query;
 
+		// Grabbing the custom config and the neccessary API keys from it
+		private static readonly Configuration Config = ConfigurationManager.OpenExeConfiguration(Application.ExecutablePath);
+		private static readonly string YoutubeApi = Config.AppSettings.Settings["youtubeApi"].Value;
+
 		public YoutubeSearch(string queryString)
 		{
 			Debug.WriteLine("YouTube Data API: Search");
@@ -34,7 +40,7 @@ namespace Spotify2Youtube.Helpers
 		{
 			var youtubeService = new YouTubeService(new BaseClientService.Initializer()
 			{
-				ApiKey = "AIzaSyBC1TEfgLkM8rIbPybAs4XosJ3yxO_yGO4",
+				ApiKey = YoutubeApi,
 				ApplicationName = GetType().ToString()
 			});
 

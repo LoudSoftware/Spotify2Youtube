@@ -45,9 +45,10 @@
 			// 
 			// btnAuth
 			// 
-			this.btnAuth.Location = new System.Drawing.Point(12, 442);
+			this.btnAuth.Location = new System.Drawing.Point(18, 680);
+			this.btnAuth.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.btnAuth.Name = "btnAuth";
-			this.btnAuth.Size = new System.Drawing.Size(260, 23);
+			this.btnAuth.Size = new System.Drawing.Size(390, 35);
 			this.btnAuth.TabIndex = 0;
 			this.btnAuth.Text = "Authenticate Spotify";
 			this.btnAuth.UseVisualStyleBackColor = true;
@@ -57,9 +58,10 @@
 			// 
 			this.label1.AutoSize = true;
 			this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-			this.label1.Location = new System.Drawing.Point(12, 9);
+			this.label1.Location = new System.Drawing.Point(18, 14);
+			this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(98, 17);
+			this.label1.Size = new System.Drawing.Size(137, 25);
 			this.label1.TabIndex = 1;
 			this.label1.Text = "Saved tracks: ";
 			// 
@@ -73,9 +75,10 @@
 			this.ListYoutubeResult});
 			this.savedTracksListView.Cursor = System.Windows.Forms.Cursors.Default;
 			this.savedTracksListView.FullRowSelect = true;
-			this.savedTracksListView.Location = new System.Drawing.Point(15, 25);
+			this.savedTracksListView.Location = new System.Drawing.Point(22, 38);
+			this.savedTracksListView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.savedTracksListView.Name = "savedTracksListView";
-			this.savedTracksListView.Size = new System.Drawing.Size(777, 357);
+			this.savedTracksListView.Size = new System.Drawing.Size(1164, 547);
 			this.savedTracksListView.TabIndex = 2;
 			this.savedTracksListView.UseCompatibleStateImageBehavior = false;
 			this.savedTracksListView.View = System.Windows.Forms.View.Details;
@@ -108,17 +111,19 @@
 			// savedTracksCountLabel
 			// 
 			this.savedTracksCountLabel.AutoSize = true;
-			this.savedTracksCountLabel.Location = new System.Drawing.Point(117, 9);
+			this.savedTracksCountLabel.Location = new System.Drawing.Point(176, 14);
+			this.savedTracksCountLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.savedTracksCountLabel.Name = "savedTracksCountLabel";
-			this.savedTracksCountLabel.Size = new System.Drawing.Size(13, 13);
+			this.savedTracksCountLabel.Size = new System.Drawing.Size(19, 20);
 			this.savedTracksCountLabel.TabIndex = 3;
 			this.savedTracksCountLabel.Text = "--";
 			// 
 			// BtnYoutubeSearch
 			// 
-			this.BtnYoutubeSearch.Location = new System.Drawing.Point(584, 442);
+			this.BtnYoutubeSearch.Location = new System.Drawing.Point(876, 680);
+			this.BtnYoutubeSearch.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.BtnYoutubeSearch.Name = "BtnYoutubeSearch";
-			this.BtnYoutubeSearch.Size = new System.Drawing.Size(103, 23);
+			this.BtnYoutubeSearch.Size = new System.Drawing.Size(154, 35);
 			this.BtnYoutubeSearch.TabIndex = 4;
 			this.BtnYoutubeSearch.Text = "Search Youtube";
 			this.BtnYoutubeSearch.UseVisualStyleBackColor = true;
@@ -126,9 +131,10 @@
 			// 
 			// DownloadAllBtn
 			// 
-			this.DownloadAllBtn.Location = new System.Drawing.Point(693, 442);
+			this.DownloadAllBtn.Location = new System.Drawing.Point(1040, 680);
+			this.DownloadAllBtn.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.DownloadAllBtn.Name = "DownloadAllBtn";
-			this.DownloadAllBtn.Size = new System.Drawing.Size(99, 23);
+			this.DownloadAllBtn.Size = new System.Drawing.Size(148, 35);
 			this.DownloadAllBtn.TabIndex = 5;
 			this.DownloadAllBtn.Text = "Download All";
 			this.DownloadAllBtn.UseVisualStyleBackColor = true;
@@ -136,25 +142,27 @@
 			// 
 			// DownloadProgressBar
 			// 
-			this.DownloadProgressBar.Location = new System.Drawing.Point(15, 415);
+			this.DownloadProgressBar.Location = new System.Drawing.Point(22, 638);
+			this.DownloadProgressBar.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.DownloadProgressBar.Name = "DownloadProgressBar";
-			this.DownloadProgressBar.Size = new System.Drawing.Size(777, 21);
+			this.DownloadProgressBar.Size = new System.Drawing.Size(1166, 32);
 			this.DownloadProgressBar.TabIndex = 6;
 			// 
 			// DownloadingLabel
 			// 
 			this.DownloadingLabel.AutoSize = true;
-			this.DownloadingLabel.Location = new System.Drawing.Point(12, 399);
+			this.DownloadingLabel.Location = new System.Drawing.Point(18, 614);
+			this.DownloadingLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.DownloadingLabel.Name = "DownloadingLabel";
-			this.DownloadingLabel.Size = new System.Drawing.Size(72, 13);
+			this.DownloadingLabel.Size = new System.Drawing.Size(105, 20);
 			this.DownloadingLabel.TabIndex = 7;
 			this.DownloadingLabel.Text = "Downloading:";
 			// 
 			// WebControl
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(804, 477);
+			this.ClientSize = new System.Drawing.Size(1206, 734);
 			this.Controls.Add(this.DownloadingLabel);
 			this.Controls.Add(this.DownloadProgressBar);
 			this.Controls.Add(this.DownloadAllBtn);
@@ -164,6 +172,7 @@
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.btnAuth);
 			this.DoubleBuffered = true;
+			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.Name = "WebControl";
 			this.Text = "Spotify2Youtube";
 			this.ResumeLayout(false);
