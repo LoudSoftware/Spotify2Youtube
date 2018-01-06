@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
@@ -9,19 +8,26 @@ using System.Windows.Forms;
 using Spotify2Youtube.Exceptions;
 using Spotify2Youtube.Helpers;
 using SpotifyAPI.Web;
-using SpotifyAPI.Web.Auth;
-using SpotifyAPI.Web.Enums;
 using SpotifyAPI.Web.Models;
 
 namespace Spotify2Youtube
 {
 	public partial class WebControl : Form
 	{
-		private SpotifyWebAPI _spotify;
+		public WebControl()
+		{
+			InitializeComponent();
 
-		// Grabbing the custom config and the neccessary API keys from it
-		private static readonly Configuration Config = ConfigurationManager.OpenExeConfiguration(Application.ExecutablePath);
-		private static readonly string Clientid = Config.AppSettings.Settings["spotifyApi"].Value;
+			savedTracksListView.MouseClick += SavedTracksListView_MouseClick;
+			savedTracksListView.MouseMove += SavedTracksListView_MouseMove;
+
+
+			SavedTracks = new List<FullTrack>();
+			_authentication = new Authentication(this);
+			InitialSetup();
+		}
+
+		public SpotifyWebAPI Spotify { get; set; }
 
 
 		// This is some magic voodoo shit I found on SOF this kinda fixes the flickering.
@@ -36,17 +42,6 @@ namespace Spotify2Youtube
 		}
 
 		private List<FullTrack> SavedTracks { get; set; }
-
-		public WebControl()
-		{
-			InitializeComponent();
-
-			savedTracksListView.MouseClick += SavedTracksListView_MouseClick;
-			savedTracksListView.MouseMove += SavedTracksListView_MouseMove;
-
-
-			SavedTracks = new List<FullTrack>();
-		}
 
 		private async void InitialSetup()
 		{
@@ -65,7 +60,7 @@ namespace Spotify2Youtube
 			savedTracksCountLabel.Text = SavedTracks.Count.ToString();
 			SavedTracks.ForEach(track =>
 			{
-				savedTracksListView.Items.Add(new ListViewItem()
+				savedTracksListView.Items.Add(new ListViewItem
 				{
 					Tag = track,
 					Text = track.Name,
@@ -90,7 +85,7 @@ namespace Spotify2Youtube
 		/*
 		 */
 		/// <summary>
-		/// Starts a youtube search with the given query
+		///     Starts a youtube search with the given query
 		/// </summary>
 		/// <param name="query">The search query</param>
 		/// <returns>A list containning the search results</returns>
@@ -104,10 +99,7 @@ namespace Spotify2Youtube
 			}
 			catch (AggregateException ex)
 			{
-				foreach (var e in ex.InnerExceptions)
-				{
-					Debug.WriteLine("Error: " + e.Message);
-				}
+				foreach (var e in ex.InnerExceptions) Debug.WriteLine("Error: " + e.Message);
 			}
 
 			var firstResult = results.First();
@@ -118,17 +110,17 @@ namespace Spotify2Youtube
 
 
 		/// <summary>
-		/// Gets all the authenticated user's saved tracks
+		///     Gets all the authenticated user's saved tracks
 		/// </summary>
 		/// <returns>The list of all saved tracks</returns>
 		private async Task<List<FullTrack>> GetSavedTracksAsync()
 		{
-			var savedTracks = await _spotify.GetSavedTracksAsync();
+			var savedTracks = await Spotify.GetSavedTracksAsync();
 			var list = savedTracks.Items.Select(track => track.Track).ToList();
 
 			while (savedTracks.Next != null)
 			{
-				savedTracks = await _spotify.GetSavedTracksAsync(20, savedTracks.Offset + savedTracks.Limit);
+				savedTracks = await Spotify.GetSavedTracksAsync(20, savedTracks.Offset + savedTracks.Limit);
 				list.AddRange(savedTracks.Items.Select(track => track.Track));
 			}
 
@@ -136,46 +128,11 @@ namespace Spotify2Youtube
 		}
 
 
-		/// <summary>
-		/// Runs the authentication process
-		/// </summary>
-		private async void RunAuthentication()
-		{
-			Debug.WriteLine("Started authentication Task.");
-			var webApiFactory = new WebAPIFactory(
-				"http://localhost",
-				8000,
-				Clientid,
-				Scope.UserReadPrivate | Scope.UserReadEmail | Scope.PlaylistReadPrivate | Scope.UserLibraryRead |
-				Scope.UserReadPrivate | Scope.UserFollowRead | Scope.UserReadBirthdate | Scope.UserTopRead |
-				Scope.PlaylistReadCollaborative |
-				Scope.UserReadRecentlyPlayed | Scope.UserReadPlaybackState | Scope.UserModifyPlaybackState);
-
-
-			try
-			{
-				_spotify = await webApiFactory.GetWebApi();
-			}
-			catch (Exception e)
-			{
-				Debug.WriteLine(e.Message);
-			}
-
-			if (_spotify == null)
-			{
-				Debug.WriteLine("_spotify is null");
-				return;
-			}
-
-			InitialSetup();
-		}
-
-
 		#region UI action Listeners
 
 		private void BtnAuth_Click(object sender, EventArgs e)
 		{
-			Task.Run(() => RunAuthentication());
+			Task.Run(() => _authentication.RunAuthentication());
 		}
 
 
@@ -219,13 +176,9 @@ namespace Spotify2Youtube
 		{
 			var hit = savedTracksListView.HitTest(e.Location);
 			if (hit.SubItem != null && (hit.SubItem == hit.Item.SubItems[3] || hit.Item.SubItems.Count == 5))
-			{
 				savedTracksListView.Cursor = Cursors.Hand;
-			}
 			else
-			{
 				savedTracksListView.Cursor = Cursors.Default;
-			}
 		}
 
 

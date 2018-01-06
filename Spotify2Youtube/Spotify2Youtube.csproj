@@ -137,6 +137,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\Authentication.cs" />
     <Compile Include="Exceptions\FileAlreadyConvertedException.cs" />
     <Compile Include="Helpers\FileConverter.cs" />
     <Compile Include="Helpers\TagMp3.cs" />

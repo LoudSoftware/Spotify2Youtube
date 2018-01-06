@@ -1,4 +1,6 @@
-﻿namespace Spotify2Youtube
+﻿using Spotify2Youtube.Helpers;
+
+namespace Spotify2Youtube
 {
 	partial class WebControl
 	{
@@ -6,6 +8,11 @@
 		/// Required designer variable.
 		/// </summary>
 		private System.ComponentModel.IContainer components = null;
+
+		public Authentication Authentication
+		{
+			get { return _authentication; }
+		}
 
 		/// <summary>
 		/// Clean up any resources being used.
@@ -195,6 +202,7 @@
 		private System.Windows.Forms.Button DownloadAllBtn;
 		private System.Windows.Forms.ProgressBar DownloadProgressBar;
 		private System.Windows.Forms.Label DownloadingLabel;
+		private readonly Authentication _authentication;
 	}
 }
 
