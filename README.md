@@ -17,6 +17,7 @@ Also, you will need to provide your own API keys to successfully build this proj
 <appSettings>
   <add key="youtubeApi" value="YOUR_YOUTUBE_API_HERE" />
   <add key="spotifyApi" value="YOUR_SPOTIFY_APP_CLIENT_ID_HERE" />
-</appSettings>```
+</appSettings>
+```
 
 4. Hope for the best, I have no clue if this will work on your machine. Contact me if you are interested
