@@ -24,7 +24,6 @@ namespace Spotify2Youtube
 
 			SavedTracks = new List<FullTrack>();
 			_authentication = new Authentication(this);
-			InitialSetup();
 		}
 
 		public SpotifyWebAPI Spotify { get; set; }
@@ -43,7 +42,7 @@ namespace Spotify2Youtube
 
 		private List<FullTrack> SavedTracks { get; set; }
 
-		private async void InitialSetup()
+		public async void InitialSetup()
 		{
 			if (InvokeRequired)
 			{
@@ -53,8 +52,14 @@ namespace Spotify2Youtube
 
 			btnAuth.Enabled = false;
 
-
-			SavedTracks = await GetSavedTracksAsync();
+			try
+			{
+				SavedTracks = await GetSavedTracksAsync();
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e);
+			}
 
 
 			savedTracksCountLabel.Text = SavedTracks.Count.ToString();
@@ -143,27 +148,40 @@ namespace Spotify2Youtube
 		{
 			foreach (ListViewItem item in savedTracksListView.Items)
 			{
-				var subItems = item.SubItems;
+				RunSearch(item);
+			}
+		}
 
-				var title = item.Text;
-				var artist = subItems[1].Text;
+
+		private async Task RunSearch(ListViewItem item)
+		{
+			var subItems = item.SubItems;
+
+			var title = item.Text;
+			var artist = subItems[1].Text;
 
 
-				try
+			try
+			{
+				Debug.WriteLine("Searchig for: " + title + " " + artist);
+
+				var result = await SearchYoutube(title + " " + artist);
+				item.SubItems.Add(result); // TODO figure out if we can skip this await call
+
+				item.UseItemStyleForSubItems = false;
+				item.SubItems[4].ForeColor = Color.Blue;
+				item.SubItems[4].Font =
+					new Font(item.SubItems[4].Font.FontFamily, item.SubItems[4].Font.Size, FontStyle.Underline);
+			}
+			catch (YoutubeSearchNotFoundException ex)
+			{
+				Debug.WriteLine(ex.Message);
+				item.BackColor = Color.Red;
+
+				item.SubItems.Add("NOT FOUND");
+				foreach (ListViewItem.ListViewSubItem subItem in item.SubItems)
 				{
-					Debug.WriteLine("Searchig for: " + title + " " + artist);
-
-					item.SubItems.Add(await SearchYoutube(title + " " + artist)); // TODO figure out if we can skip this await call
-
-					item.UseItemStyleForSubItems = false;
-					item.SubItems[4].ForeColor = Color.Blue;
-					item.SubItems[4].Font =
-						new Font(item.SubItems[4].Font.FontFamily, item.SubItems[4].Font.Size, FontStyle.Underline);
-				}
-				catch (YoutubeSearchNotFoundException ex)
-				{
-					Debug.WriteLine(ex.Message);
-					item.BackColor = Color.Red;
+					subItem.BackColor = Color.Red;
 				}
 			}
 		}

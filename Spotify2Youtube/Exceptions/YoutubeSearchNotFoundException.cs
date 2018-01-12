@@ -3,13 +3,13 @@
 namespace Spotify2Youtube.Exceptions
 {
 	[Serializable()]
-	internal class YoutubeSearchNotFoundException : Exception
+	public class YoutubeSearchNotFoundException : Exception
 	{
 		public YoutubeSearchNotFoundException()
 		{
 		}
 
-		public YoutubeSearchNotFoundException(string message) : base(message)
+		public YoutubeSearchNotFoundException(string query) : base($"Warning: Could not find {query} on YouTube")
 		{
 		}
 

@@ -140,6 +140,7 @@
     <Compile Include="Helpers\Authentication.cs" />
     <Compile Include="Exceptions\FileAlreadyConvertedException.cs" />
     <Compile Include="Helpers\FileConverter.cs" />
+    <Compile Include="Helpers\InitialSetup.cs" />
     <Compile Include="Helpers\TagMp3.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="WebControl.cs">
@@ -166,13 +167,13 @@
     <EmbeddedResource Include="WebControl.resx">
       <DependentUpon>WebControl.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="ClassDiagram1.cd" />
     <Content Include="ffprobe.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="packages.config" />
     <None Include="Properties\Keys.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

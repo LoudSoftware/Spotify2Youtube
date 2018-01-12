@@ -31,10 +31,10 @@ namespace Spotify2Youtube.Helpers
 				8000, Clientid,
 				Scope.UserLibraryRead);
 
-
 			try
 			{
 				_webControl.Spotify = await webApiFactory.GetWebApi();
+				_webControl.InitialSetup();
 			}
 			catch (Exception e)
 			{

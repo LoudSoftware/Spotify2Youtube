@@ -65,7 +65,7 @@ namespace Spotify2Youtube
 			// 
 			this.label1.AutoSize = true;
 			this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-			this.label1.Location = new System.Drawing.Point(18, 14);
+			this.label1.Location = new System.Drawing.Point(17, 10);
 			this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(137, 25);
@@ -75,11 +75,11 @@ namespace Spotify2Youtube
 			// savedTracksListView
 			// 
 			this.savedTracksListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-			this.ListTitle,
-			this.ListArtist,
-			this.ListAlbum,
-			this.ListURI,
-			this.ListYoutubeResult});
+            this.ListTitle,
+            this.ListArtist,
+            this.ListAlbum,
+            this.ListURI,
+            this.ListYoutubeResult});
 			this.savedTracksListView.Cursor = System.Windows.Forms.Cursors.Default;
 			this.savedTracksListView.FullRowSelect = true;
 			this.savedTracksListView.Location = new System.Drawing.Point(22, 38);
@@ -113,7 +113,7 @@ namespace Spotify2Youtube
 			// ListYoutubeResult
 			// 
 			this.ListYoutubeResult.Text = "Youtube Result";
-			this.ListYoutubeResult.Width = 154;
+			this.ListYoutubeResult.Width = 147;
 			// 
 			// savedTracksCountLabel
 			// 
@@ -170,13 +170,13 @@ namespace Spotify2Youtube
 			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1206, 734);
+			this.Controls.Add(this.label1);
 			this.Controls.Add(this.DownloadingLabel);
 			this.Controls.Add(this.DownloadProgressBar);
 			this.Controls.Add(this.DownloadAllBtn);
 			this.Controls.Add(this.BtnYoutubeSearch);
 			this.Controls.Add(this.savedTracksCountLabel);
 			this.Controls.Add(this.savedTracksListView);
-			this.Controls.Add(this.label1);
 			this.Controls.Add(this.btnAuth);
 			this.DoubleBuffered = true;
 			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
