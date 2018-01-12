@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
@@ -8,7 +7,6 @@ using System.Windows.Forms;
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 using Spotify2Youtube.Exceptions;
-using TagLib.Riff;
 using static Google.Apis.YouTube.v3.SearchResource.ListRequest;
 
 namespace Spotify2Youtube.Helpers

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.Net.Mime;
-using System.Reflection;
-using System.Security.Policy;
+﻿using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Spotify2Youtube.Helpers;

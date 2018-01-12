@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using MediaToolkit.Model;
 using SpotifyAPI.Web.Models;
 
 namespace Spotify2Youtube.Helpers

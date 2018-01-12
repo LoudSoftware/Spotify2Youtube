@@ -25,6 +25,7 @@ namespace Spotify2YoutubeTests.Helpers
 			}
 			catch (YoutubeSearchNotFoundException e)
 			{
+				Debug.WriteLine(e.Message);
 				Assert.Fail();
 			}
 			catch (Exception e)

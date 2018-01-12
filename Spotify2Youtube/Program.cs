@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Configuration;
-using System.Diagnostics;
-using System.IO;
 using System.Windows.Forms;
 using Spotify2Youtube.Helpers;
-using Spotify2Youtube.Properties;
 
 namespace Spotify2Youtube
 {

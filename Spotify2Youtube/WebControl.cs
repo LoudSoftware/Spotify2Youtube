@@ -144,11 +144,14 @@ namespace Spotify2Youtube
 		/*
 		 * Starts the a youtube search when the search youtube button is clicked
 		 */
-		private async void BtnYoutubeSearch_Click(object sender, EventArgs e)
+
+		private void BtnYoutubeSearch_Click(object sender, EventArgs e)
 		{
 			foreach (ListViewItem item in savedTracksListView.Items)
 			{
+#pragma warning disable 4014
 				RunSearch(item);
+#pragma warning restore 4014
 			}
 		}
 
