@@ -83,6 +83,8 @@ namespace Spotify2Youtube
 			{
 				item.UseItemStyleForSubItems = false;
 				item.SubItems[3].ForeColor = Color.Blue;
+				item.SubItems[3].Font =
+					new Font(item.SubItems[3].Font.FontFamily, item.SubItems[3].Font.Size, FontStyle.Underline);
 			}
 		}
 
@@ -196,8 +198,12 @@ namespace Spotify2Youtube
 		private void SavedTracksListView_MouseMove(object sender, MouseEventArgs e)
 		{
 			var hit = savedTracksListView.HitTest(e.Location);
-			if (hit.SubItem != null && (hit.SubItem == hit.Item.SubItems[3] || hit.Item.SubItems.Count == 5))
+			if (hit.SubItem != null
+			    && (hit.SubItem == hit.Item.SubItems[3]
+			        || hit.Item.SubItems.Count == 5 && hit.Item.SubItems[4].Text != @"NOT FOUND"))
+			
 				savedTracksListView.Cursor = Cursors.Hand;
+			
 			else
 				savedTracksListView.Cursor = Cursors.Default;
 		}
@@ -216,7 +222,7 @@ namespace Spotify2Youtube
 			}
 			else if (hit.SubItem != null && hit.Item.SubItems.Count == 5)
 			{
-				if (hit.SubItem != hit.Item.SubItems[4]) return;
+				if (hit.SubItem != hit.Item.SubItems[4] || hit.Item.SubItems[4].Text == @"NOT FOUND") return;
 				var url = new Uri("https://www.youtube.com/watch?v=" + hit.SubItem.Text);
 				Process.Start(url.ToString());
 			}

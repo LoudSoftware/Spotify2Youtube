@@ -30,10 +30,8 @@ namespace Spotify2Youtube.Helpers
 
 		public YoutubeSearch(string queryString)
 		{
-			Debug.WriteLine("YouTube Data API: Search");
-			Debug.WriteLine("========================");
-
 			_query = queryString;
+			Debug.WriteLine($"========== Begin Search for {_query} ==========");
 		}
 
 		public async Task<List<string>> Run()
@@ -86,7 +84,6 @@ namespace Spotify2Youtube.Helpers
 
 
 			if (shortVideos.Count != 0) return shortVideos;
-//			shortVideos.Add("notFound");
 			throw new YoutubeSearchNotFoundException(_query);
 		}
 	}
