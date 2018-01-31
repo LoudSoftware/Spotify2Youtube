@@ -142,6 +142,7 @@
     <Compile Include="Helpers\FileConverter.cs" />
     <Compile Include="Helpers\InitialSetup.cs" />
     <Compile Include="Helpers\TagMp3.cs" />
+    <Compile Include="Helpers\Tasks.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="WebControl.cs">
       <SubType>Form</SubType>

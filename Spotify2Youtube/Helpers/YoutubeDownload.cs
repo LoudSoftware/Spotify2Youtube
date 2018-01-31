@@ -11,29 +11,27 @@ namespace Spotify2Youtube.Helpers
 {
 	internal class YoutubeDownload
 	{
-		private readonly string _id;
-		private readonly string _title;
-		private readonly string[] _artists;
-
-		private readonly Progress<double> _progress;
-		private readonly FullTrack _track;
-
-
-		public YoutubeDownload(Progress<double> progress, string videoId, FullTrack track)
+		public static async Task Download(Progress<double> progress, string videoId, FullTrack track)
 		{
+			string id;
+			string title;
+			string[] _artists;
+
+			Progress<double> _progress;
+			FullTrack _track;
+
+
 			_track = track;
 
-			_id = videoId;
-			_title = track.Name;
+			id = videoId;
+			title = track.Name;
 			_artists = track.Artists.Select(source => source.Name).ToArray();
 			_progress = progress;
-		}
 
-		public async Task Download()
-		{
 			var client = new YoutubeClient();
+			Debug.WriteLine($"Now finding stream info Set for {id}");
 
-			var streamInfoSet = await client.GetVideoMediaStreamInfosAsync(_id);
+			var streamInfoSet = await client.GetVideoMediaStreamInfosAsync(id);
 
 			var streamInfo = streamInfoSet.Audio.WithHighestBitrate();
 			var ext = streamInfo.Container.GetFileExtension();
@@ -41,11 +39,13 @@ namespace Spotify2Youtube.Helpers
 
 			var artists = string.Join(",", _artists);
 
-			var filename = $"{_title} - {artists}";
+			var filename = $"{title} - {artists}";
 
 
 			var inputFile = $@"{Settings.Default.DownloadPath}\{filename}.{ext}";
+			Debug.WriteLine($"Input FilePath: {inputFile}");
 			var outputFile = $@"{Settings.Default.ConvertedPath}\{filename}.mp3";
+			Debug.WriteLine($"Output Filepath: {outputFile}");
 
 
 			await client.DownloadMediaStreamAsync(streamInfo, $@"{Settings.Default.DownloadPath}\{filename}.{ext}", _progress);

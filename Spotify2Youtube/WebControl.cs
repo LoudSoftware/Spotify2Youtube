@@ -201,9 +201,9 @@ namespace Spotify2Youtube
 			if (hit.SubItem != null
 			    && (hit.SubItem == hit.Item.SubItems[3]
 			        || hit.Item.SubItems.Count == 5 && hit.Item.SubItems[4].Text != @"NOT FOUND"))
-			
+
 				savedTracksListView.Cursor = Cursors.Hand;
-			
+
 			else
 				savedTracksListView.Cursor = Cursors.Default;
 		}
@@ -236,6 +236,7 @@ namespace Spotify2Youtube
 
 			var progress = new Progress<double>(p => DownloadProgressBar.Value = (int) Math.Round(p * 85));
 
+			List<Task> tasks = new List<Task>(savedTracksListView.Items.Count);
 
 			foreach (ListViewItem item in savedTracksListView.Items)
 			{
@@ -256,12 +257,24 @@ namespace Spotify2Youtube
 					continue;
 				}
 
-				await Task.Run(() => new YoutubeDownload(progress, id, (FullTrack) item.Tag).Download());
+				if (id != @"NOT FOUND")
+				{
+					tasks.Add(new Task( () => YoutubeDownload.Download(progress, id, (FullTrack) item.Tag).Wait()));
+
+//					await Task.Run(() => new YoutubeDownload(progress, id, (FullTrack)item.Tag).Download());
+
+				}
+
+
 
 				DownloadProgressBar.Value = 100;
 			}
-		}
 
-		#endregion
+			var parallelOptions = new ParallelOptions {MaxDegreeOfParallelism = 3};
+
+			Tasks.StartAndWaitAllThrottledAsync(tasks.ToArray(), 3);
+
+			#endregion
+		}
 	}
 }
