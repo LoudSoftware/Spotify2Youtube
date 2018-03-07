@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -9,6 +10,7 @@ using Spotify2Youtube.Exceptions;
 using Spotify2Youtube.Helpers;
 using SpotifyAPI.Web;
 using SpotifyAPI.Web.Models;
+using static System.DateTime;
 
 namespace Spotify2Youtube
 {
@@ -54,7 +56,12 @@ namespace Spotify2Youtube
 
 			try
 			{
+				TextWriter tw = new StreamWriter($"{Now.Hour}-{Now.Minute}.txt");
 				SavedTracks = await GetSavedTracksAsync();
+				foreach (FullTrack track in SavedTracks)
+				{
+					tw.WriteLine(track.ExternUrls["spotify"]);
+				}
 			}
 			catch (Exception e)
 			{
@@ -130,7 +137,18 @@ namespace Spotify2Youtube
 				savedTracks = await Spotify.GetSavedTracksAsync(20, savedTracks.Offset + savedTracks.Limit);
 				list.AddRange(savedTracks.Items.Select(track => track.Track));
 			}
+/*
+			foreach (FullTrack track in list)
+			{
+				var album = Spotify.GetAlbum(track.Album.Id);
+				Debug.WriteLine(album.);
+			}*/
+			
+/*			var severalalbums = await Spotify.GetSeveralAlbumsAsync(new List<string>(list.Select(track => track.Id)));
 
+			var albums = severalalbums.Albums;*/
+			
+			
 			return list;
 		}
 
@@ -151,9 +169,9 @@ namespace Spotify2Youtube
 		{
 			foreach (ListViewItem item in savedTracksListView.Items)
 			{
-#pragma warning disable 4014
+				#pragma warning disable 4014
 				RunSearch(item);
-#pragma warning restore 4014
+				#pragma warning restore 4014
 			}
 		}
 
@@ -259,10 +277,14 @@ namespace Spotify2Youtube
 
 				if (id != @"NOT FOUND")
 				{
-					tasks.Add(new Task( () => YoutubeDownload.Download(progress, id, (FullTrack) item.Tag).Wait()));
-
-//					await Task.Run(() => new YoutubeDownload(progress, id, (FullTrack)item.Tag).Download());
-
+					tasks.Add(new Task( 
+						() =>
+						{
+							var track = (FullTrack) item.Tag;
+							var album = Spotify.GetAlbum(track.Album.Id);
+							YoutubeDownload.Download(progress, id, track, album).Wait();
+						})
+					);
 				}
 
 

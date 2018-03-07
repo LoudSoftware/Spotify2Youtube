@@ -9,24 +9,14 @@ using YoutubeExplode.Models.MediaStreams;
 
 namespace Spotify2Youtube.Helpers
 {
-	internal class YoutubeDownload
+	internal static class YoutubeDownload
 	{
-		public static async Task Download(Progress<double> progress, string videoId, FullTrack track)
+		public static async Task Download(Progress<double> progress, string videoId, FullTrack track, FullAlbum album)
 		{
-			string id;
-			string title;
-			string[] _artists;
+			var id = videoId;
+			var title = track.Name;
+			var artistsArray = track.Artists.Select(source => source.Name).ToArray();
 
-			Progress<double> _progress;
-			FullTrack _track;
-
-
-			_track = track;
-
-			id = videoId;
-			title = track.Name;
-			_artists = track.Artists.Select(source => source.Name).ToArray();
-			_progress = progress;
 
 			var client = new YoutubeClient();
 			Debug.WriteLine($"Now finding stream info Set for {id}");
@@ -37,7 +27,7 @@ namespace Spotify2Youtube.Helpers
 			var ext = streamInfo.Container.GetFileExtension();
 
 
-			var artists = string.Join(",", _artists);
+			var artists = string.Join(",", artistsArray);
 
 			var filename = $"{title} - {artists}";
 
@@ -48,15 +38,15 @@ namespace Spotify2Youtube.Helpers
 			Debug.WriteLine($"Output Filepath: {outputFile}");
 
 
-			await client.DownloadMediaStreamAsync(streamInfo, $@"{Settings.Default.DownloadPath}\{filename}.{ext}", _progress);
+			await client.DownloadMediaStreamAsync(streamInfo, $@"{Settings.Default.DownloadPath}\{filename}.{ext}", progress);
 
-			Debug.WriteLine("Download complete!");
-			Debug.WriteLine("Now converting the file");
+			Debug.WriteLine($"Download complete for: {outputFile}...");
+			Debug.WriteLine($"Now converting the file: {outputFile}...");
 
 
 			await Task.Run(async () => await FileConverter.ConvertToMp3(inputFile, outputFile));
 
-			await Task.Run(() => TagMp3.Tag(outputFile, _track));
+			await Task.Run(() => TagMp3.Tag(outputFile, track, album));
 		}
 	}
 }
